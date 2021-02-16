@@ -1,0 +1,5 @@
+photos
+db.sqlite3
+appAPI/__pycache__
+appAPI/migrations
+petnewhome/__pycache__
