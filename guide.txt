@@ -1,0 +1,4 @@
+env\Scripts\activate เข้าenv
+
+env
+python -m pip install Pillow
