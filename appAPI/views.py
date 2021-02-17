@@ -1,3 +1,43 @@
 from django.shortcuts import render
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from appAPI.models import *
+from appAPI.serializers import *
 
 # Create your views here.
+
+
+@api_view(['POST'])
+def user_api(request):
+    if request.method == 'POST':
+        serializer = UserexSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def user_detail_api(request, pk):
+    """
+    Retrieve, update or delete a user.
+    """
+    try:
+        userId = Userex.objects.get(pk=pk)
+    except Userex.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = UserexSerializer(userId)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = UserexSerializer(userId, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    elif request.method == 'DELETE':
+        userId.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -14,6 +14,6 @@ class Userex(models.Model):
     phone_number = models.CharField(unique=True, max_length=10)
     address = models.CharField(max_length=255)
     user_type = models.CharField(max_length=10,choices=USER_TYPE)
-    photo_user = models.ImageField(upload_to='media/images/user/')
+    photo_user = models.ImageField(upload_to='images/user/')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
