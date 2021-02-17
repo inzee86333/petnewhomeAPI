@@ -17,3 +17,6 @@ class Userex(models.Model):
     photo_user = models.ImageField(upload_to='images/user/')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"ID: {self.user_id} | {self.email} | {self.created_at}"

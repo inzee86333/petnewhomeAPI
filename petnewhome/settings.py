@@ -27,7 +27,30 @@ SECRET_KEY = '84&z@a%ka4@%wc3@re2tbu=z(z$aaz%2$=dhkuy%5(oa4hi^%q'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CORS_ALLOWED_ORIGINS = [
+    "https://localhost",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000"
+]
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 # Application definition
 
@@ -123,3 +146,10 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
