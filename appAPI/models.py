@@ -12,9 +12,9 @@ class Userex(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     phone_number = models.CharField(unique=True, max_length=10)
-    address = models.CharField(max_length=255)
-    user_type = models.CharField(max_length=10,choices=USER_TYPE)
-    photo_user = models.ImageField(upload_to='images/user/')
+    address = models.CharField(max_length=255, null=True)
+    user_type = models.CharField(max_length=10, choices=USER_TYPE, null=True)
+    photo_user = models.FileField(upload_to='images/user/', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

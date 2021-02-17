@@ -29,9 +29,10 @@ DEBUG = True
 ALLOWED_HOSTS = []
 CORS_ALLOWED_ORIGINS = [
     "https://localhost",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000"
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
 ]
+
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -40,6 +41,7 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -55,6 +57,7 @@ CORS_ALLOW_HEADERS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'rest_framework',
     'appAPI.apps.AppapiConfig',
     'django.contrib.admin',
@@ -66,6 +69,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
