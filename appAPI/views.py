@@ -18,11 +18,11 @@ def login(request):
             serializer = UserexSerializer(userId)
             if email == serializer.data['email']:
                 if password == serializer.data['password']:
-                    return Response('เข้าสู้ระบบ',status=status.HTTP_200_OK)
+                    return Response('เข้าสู้ระบบ',status=status.HTTP_202_ACCEPTED)
                 else:
-                    return Response('รหัสผ่านไม่ถูก', status=status.HTTP_400_BAD_REQUEST)
+                    return Response('รหัสผ่านไม่ถูก', status=status.HTTP_200_OK)
         except Userex.DoesNotExist:
-            return Response('อีเมลไม่ถูกต้อง', status=status.HTTP_404_NOT_FOUND)
+            return Response('อีเมลไม่ถูกต้อง', status=status.HTTP_200_OK)
         
 
 @api_view(['POST'])
