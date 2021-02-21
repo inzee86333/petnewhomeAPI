@@ -9,7 +9,7 @@ from appAPI.serializers import *
 
 
 @api_view(['POST'])
-def login(request):
+def login_api(request):
     if request.method == 'POST':
         email = request.data['email']
         password = request.data['password']
@@ -18,15 +18,24 @@ def login(request):
             serializer = UserexSerializer(userId)
             if email == serializer.data['email']:
                 if password == serializer.data['password']:
-                    return Response('เข้าสู้ระบบ',status=status.HTTP_202_ACCEPTED)
+                    return Response({'message': 'เข้าสู่ระบบสำเร็จ', 'id': email}, status=status.HTTP_202_ACCEPTED)
                 else:
-                    return Response('รหัสผ่านไม่ถูก', status=status.HTTP_200_OK)
+                    return Response({'message': 'รหัสผ่านไม่ถูก'}, status=status.HTTP_200_OK)
         except Userex.DoesNotExist:
-            return Response('อีเมลไม่ถูกต้อง', status=status.HTTP_200_OK)
+            return Response({'message': 'อีเมลไม่ถูกต้อง'}, status=status.HTTP_200_OK)
         
 
 @api_view(['POST'])
-def user_api(request):
+def check_user_type_api(request):
+    if request.method == 'POST':
+        email = request.data['email']
+        try:
+            userId = Userex.objects.get(email=email)
+            serializer = UserexSerializer(userId)
+    return None
+
+@api_view(['POST'])
+def user_create_api(request):
     if request.method == 'POST':
         serializer = UserexSerializer(data=request.data)
         if serializer.is_valid():

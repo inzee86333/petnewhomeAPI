@@ -1,4 +1,6 @@
 media
+env
+.vscode
 db.sqlite3
 appAPI/__pycache__
 appAPI/migrations
