@@ -25,14 +25,14 @@ def login_api(request):
             return Response({'message': 'อีเมลไม่ถูกต้อง'}, status=status.HTTP_200_OK)
         
 
-@api_view(['POST'])
-def check_user_type_api(request):
-    if request.method == 'POST':
-        email = request.data['email']
-        try:
-            userId = Userex.objects.get(email=email)
-            serializer = UserexSerializer(userId)
-    return None
+# @api_view(['POST'])
+# def check_user_type_api(request):
+#     if request.method == 'POST':
+#         email = request.data['email']
+#         try:
+#             userId = Userex.objects.get(email=email)
+#             serializer = UserexSerializer(userId)
+#     return None
 
 @api_view(['POST'])
 def user_create_api(request):
