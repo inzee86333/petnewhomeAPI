@@ -45,7 +45,8 @@ def user_create_api(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'PUT', 'DELETE'])
+
+@api_view(['GET', 'PATCH', 'DELETE'])
 def user_detail_api(request, pk):
     """
     Retrieve, update or delete a user.
@@ -59,8 +60,8 @@ def user_detail_api(request, pk):
         serializer = UserexSerializer(userId)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        serializer = UserexSerializer(userId, data=request.data)
+    elif request.method == 'PATCH':
+        serializer = UserexSerializer(userId, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
