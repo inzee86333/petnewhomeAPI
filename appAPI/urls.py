@@ -4,6 +4,7 @@ from appAPI import views
 
 urlpatterns = [
     path('login/', views.login_api),
+    path('check_user_type/', views.user_check_type_api),
     path('user_post/', views.user_create_api),
     path('user_detail/<int:pk>', views.user_detail_api),
 ]
