@@ -18,7 +18,7 @@ def login_api(request):
             serializer = UserexSerializer(userId)
             if email == serializer.data['email']:
                 if password == serializer.data['password']:
-                    return Response({'message': 'เข้าสู่ระบบสำเร็จ', 'id': email}, status=status.HTTP_202_ACCEPTED)
+                    return Response({'message': 'เข้าสู่ระบบสำเร็จ', 'email': email}, status=status.HTTP_202_ACCEPTED)
                 else:
                     return Response({'message': 'รหัสผ่านไม่ถูก'}, status=status.HTTP_200_OK)
         except Userex.DoesNotExist:
@@ -27,7 +27,18 @@ def login_api(request):
 @api_view(['POST'])
 def user_check_type_api(request):
     if request.method == 'POST':
-        # print(request.headers.get('Authorization'))
+        email = request.headers.get('Authorization')
+        try:
+            userId = Userex.objects.get(email=email)
+            serializer = UserexSerializer(userId)
+            return Response({'user_type': serializer.data['user_type']}, status=status.HTTP_202_ACCEPTED)
+        except Userex.DoesNotExist:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+def user_check_id_api(request):
+    if request.method == 'POST':
         email = request.headers.get('Authorization')
         try:
             userId = Userex.objects.get(email=email)
@@ -46,17 +57,18 @@ def user_create_api(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PATCH', 'DELETE'])
-def user_detail_api(request, pk):
+@api_view(['POST', 'PATCH', 'DELETE'])
+def user_detail_api(request):
     """
     Retrieve, update or delete a user.
     """
     try:
-        userId = Userex.objects.get(pk=pk)
+        email = request.headers.get('Authorization')
+        userId = Userex.objects.get(email=email)
     except Userex.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'GET':
+    if request.method == 'POST':
         serializer = UserexSerializer(userId)
         return Response(serializer.data)
 
