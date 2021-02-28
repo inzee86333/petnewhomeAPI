@@ -96,10 +96,10 @@ def pet_create_api(request):
             serializerUserex = UserexSerializer(userId)
             request.data.update({'owner_id': serializerUserex.data['user_id']})
         except Userex.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response({'message': 'กรุณาเข้าสู้ระบบระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
-        serializer = PetsSerializer(data=request.data, partial=True)
+        serializer = PetSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'เพิ่มสัตว์เลี้ยงสำเร็จ'}, status=status.HTTP_201_CREATED)
+        return Response({'message': 'เพิ่มสัตว์เลี้ยงไม่สำเร็จ'}, status=status.HTTP_400_BAD_REQUEST)

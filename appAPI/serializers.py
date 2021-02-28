@@ -21,7 +21,7 @@ class UserexSerializer(serializers.ModelSerializer):
         model = Userex
         fields = '__all__'
 
-class PetsSerializer(serializers.ModelSerializer):
+class PetSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Pets
+        model = Pet
         fields = '__all__'

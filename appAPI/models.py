@@ -21,7 +21,7 @@ class Userex(models.Model):
     def __str__(self):
         return f"ID: {self.user_id} | {self.email} | {self.created_at}"
 
-class Pets(models.Model):
+class Pet(models.Model):
     pet_id = models.AutoField(primary_key=True)
     owner_id = models.ForeignKey("appAPI.Userex", verbose_name=("owner"), on_delete=models.CASCADE)
     new_owner_id = models.ForeignKey("appAPI.Userex", verbose_name=(
@@ -31,4 +31,9 @@ class Pets(models.Model):
     birth_year = models.CharField(max_length=255, null=True)
     sex = models.CharField(max_length=255, null=True)
     disease = models.CharField(max_length=255, null=True)
+    province = models.CharField(max_length=255)
+    district = models.CharField(max_length=255)
     status = models.CharField(max_length=255, null=True)
+
+    def __str__(self):
+        return f"ID: {self.pet_id} | {self.owner_id} | {self.new_owner_id} | {self.status}"
