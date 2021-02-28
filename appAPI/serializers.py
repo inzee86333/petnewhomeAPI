@@ -1,5 +1,5 @@
 from django.db.models import fields
-from appAPI.models import Userex
+from appAPI.models import *
 from django.contrib.auth.models import User, Group
 from django.db import models
 from rest_framework import serializers
@@ -19,4 +19,9 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class UserexSerializer(serializers.ModelSerializer):
     class Meta:
         model = Userex
+        fields = '__all__'
+
+class PetsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pets
         fields = '__all__'

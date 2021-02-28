@@ -4,10 +4,11 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from appAPI.models import *
 from appAPI.serializers import *
+import json
 
 # Create your views here.
 
-
+# User
 @api_view(['POST'])
 def login_api(request):
     if request.method == 'POST':
@@ -27,9 +28,9 @@ def login_api(request):
 @api_view(['POST'])
 def user_check_type_api(request):
     if request.method == 'POST':
-        email = request.headers.get('Authorization')
+        token = request.headers.get('Authorization')
         try:
-            userId = Userex.objects.get(email=email)
+            userId = Userex.objects.get(email=token)
             serializer = UserexSerializer(userId)
             return Response({'user_type': serializer.data['user_type']}, status=status.HTTP_202_ACCEPTED)
         except Userex.DoesNotExist:
@@ -39,9 +40,9 @@ def user_check_type_api(request):
 @api_view(['POST'])
 def user_check_id_api(request):
     if request.method == 'POST':
-        email = request.headers.get('Authorization')
+        token = request.headers.get('Authorization')
         try:
-            userId = Userex.objects.get(email=email)
+            userId = Userex.objects.get(email=token)
             serializer = UserexSerializer(userId)
             return Response({'user_type': serializer.data['user_type']}, status=status.HTTP_202_ACCEPTED)
         except Userex.DoesNotExist:
@@ -63,8 +64,8 @@ def user_detail_api(request):
     Retrieve, update or delete a user.
     """
     try:
-        email = request.headers.get('Authorization')
-        userId = Userex.objects.get(email=email)
+        token = request.headers.get('Authorization')
+        userId = Userex.objects.get(email=token)
     except Userex.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -83,3 +84,22 @@ def user_detail_api(request):
     elif request.method == 'DELETE':
         userId.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# Pets
+@api_view(['POST'])
+def pet_create_api(request):
+    request.data._mutable = True
+    if request.method == 'POST':
+        try:
+            token = request.headers.get('Authorization')
+            userId = Userex.objects.get(email=token)
+            serializerUserex = UserexSerializer(userId)
+            request.data.update({'owner_id': serializerUserex.data['user_id']})
+        except Userex.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PetsSerializer(data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

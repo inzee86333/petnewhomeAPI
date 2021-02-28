@@ -20,3 +20,15 @@ class Userex(models.Model):
 
     def __str__(self):
         return f"ID: {self.user_id} | {self.email} | {self.created_at}"
+
+class Pets(models.Model):
+    pet_id = models.AutoField(primary_key=True)
+    owner_id = models.ForeignKey("appAPI.Userex", verbose_name=("owner"), on_delete=models.CASCADE)
+    new_owner_id = models.ForeignKey("appAPI.Userex", verbose_name=(
+        "new_owner"), on_delete=models.CASCADE, related_name='+', null=True)
+    animal_type = models.CharField(max_length=255)
+    species = models.CharField(max_length=255, null=True)
+    birth_year = models.CharField(max_length=255, null=True)
+    sex = models.CharField(max_length=255, null=True)
+    disease = models.CharField(max_length=255, null=True)
+    status = models.CharField(max_length=255, null=True)
