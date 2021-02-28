@@ -70,6 +70,7 @@ def user_detail_api(request):
 
     if request.method == 'POST':
         serializer = UserexSerializer(userId)
+        serializer.data['password'] = ''
         return Response(serializer.data)
 
     elif request.method == 'PATCH':
