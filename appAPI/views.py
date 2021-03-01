@@ -70,15 +70,15 @@ def user_detail_api(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'POST':
-        serializer = UserexSerializer(userId)
-        serializer.data['password'] = ''
-        return Response(serializer.data)
+        newDict = UserexSerializer(userId).data
+        newDict.pop('password')
+        return Response(newDict)
 
     elif request.method == 'PATCH':
         serializer = UserexSerializer(userId, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data,status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     elif request.method == 'DELETE':
@@ -96,10 +96,26 @@ def pet_create_api(request):
             serializerUserex = UserexSerializer(userId)
             request.data.update({'owner_id': serializerUserex.data['user_id']})
         except Userex.DoesNotExist:
-            return Response({'message': 'กรุณาเข้าสู้ระบบระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+            return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
         serializer = PetSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({'message': 'เพิ่มสัตว์เลี้ยงสำเร็จ'}, status=status.HTTP_201_CREATED)
-        return Response({'message': 'เพิ่มสัตว์เลี้ยงไม่สำเร็จ'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+# Pets images
+@api_view(['POST'])
+def pet_image_api(request):
+    if request.method == 'POST':
+        try:
+            token = request.headers.get('Authorization')
+            userId = Userex.objects.get(email=token)
+        except Userex.DoesNotExist:
+            return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+        serializer = PetImageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data , status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)

@@ -4,7 +4,6 @@ from django.contrib.auth.models import User, Group
 from django.db import models
 from rest_framework import serializers
 
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
@@ -24,4 +23,9 @@ class UserexSerializer(serializers.ModelSerializer):
 class PetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pet
+        fields = '__all__'
+
+class PetImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PetImage
         fields = '__all__'

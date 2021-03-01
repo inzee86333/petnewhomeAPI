@@ -10,7 +10,8 @@ urlpatterns = [
     path('user_create/', views.user_create_api),
     path('user_detail/', views.user_detail_api),
     #pets
-    path('pet_create/', views.pet_create_api)
+    path('pet_create/', views.pet_create_api),
+    path('pet_image/', views.pet_image_api)
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

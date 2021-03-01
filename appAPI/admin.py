@@ -4,3 +4,4 @@ from .models import *
 # Register your models here.
 admin.site.register(Userex)
 admin.site.register(Pet)
+admin.site.register(PetImage)

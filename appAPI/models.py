@@ -14,12 +14,12 @@ class Userex(models.Model):
     phone_number = models.CharField(unique=True, max_length=10)
     address = models.CharField(max_length=255, null=True)
     user_type = models.CharField(max_length=10, choices=USER_TYPE, null=True)
-    photo_user = models.ImageField(upload_to='images/user/', null=True)
+    user_image = models.ImageField(upload_to='images/user/', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"ID: {self.user_id} | {self.email} | {self.created_at}"
+        return f"UserexID: {self.user_id} | {self.email}"
 
 class Pet(models.Model):
     pet_id = models.AutoField(primary_key=True)
@@ -36,4 +36,12 @@ class Pet(models.Model):
     status = models.CharField(max_length=255, null=True)
 
     def __str__(self):
-        return f"ID: {self.pet_id} | {self.owner_id} | {self.new_owner_id} | {self.status}"
+        return f"PetID: {self.pet_id} | {self.owner_id}"
+
+class PetImage(models.Model):
+    pet_image_id = models.AutoField(primary_key=True)
+    pet_id = models.ForeignKey("appAPI.Pet", verbose_name=("pet"), on_delete=models.CASCADE)
+    pet_image = models.ImageField(upload_to='images/pets/')
+
+    def __str__(self):
+        return f"PetImageID: {self.pet_image_id} | {self.pet_id}"
