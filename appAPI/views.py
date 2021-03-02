@@ -135,6 +135,20 @@ def pet_owner_get_api(request):
         serializer = PetSerializer(petOwnerAll, many=True)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
+
+@api_view(['GET'])
+def pet_images_get_api(request, pk):
+    try:
+        token = request.headers.get('Authorization')
+        userId = Userex.objects.get(email=token)
+        petImageAll = PetImage.objects.all().filter(pet_id=pk)
+    except Userex.DoesNotExist:
+        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+    if request.method == 'GET':
+        serializer = PetImageSerializer(petImageAll, many=True)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
 @api_view(['GET', 'POST', 'DELETE'])
 def pet_detail_api(request, pk):
     try:
