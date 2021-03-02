@@ -110,7 +110,7 @@ def pet_image_api(request):
     if request.method == 'POST':
         try:
             token = request.headers.get('Authorization')
-            userId = Userex.objects.get(email=token)
+            Userex.objects.get(email=token)
         except Userex.DoesNotExist:
             return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
@@ -118,4 +118,43 @@ def pet_image_api(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data , status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def pet_owner_get_api(request):
+    try:
+        token = request.headers.get('Authorization')
+        userId = Userex.objects.get(email=token)
+        userSerializer = UserexSerializer(userId)
+        petOwnerAll = Pet.objects.all().filter(owner_id=userSerializer.data['user_id'])
+    except Userex.DoesNotExist:
+        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+    if request.method == 'POST':
+        serializer = PetSerializer(petOwnerAll, many=True)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+@api_view(['GET', 'POST', 'DELETE'])
+def pet_detail_api(request, pk):
+    try:
+        token = request.headers.get('Authorization')
+        Userex.objects.get(email=token)
+        petId = Pet.objects.get(pk=pk)
+    except Userex.DoesNotExist:
+        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+    if request.method == 'GET':
+        serializer = PetSerializer(petId)
+        return Response(serializer)
+
+    elif request.method == 'PATCH':
+        serializer = PetSerializer(petId, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        petId.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
