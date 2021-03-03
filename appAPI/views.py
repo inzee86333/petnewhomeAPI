@@ -36,7 +36,6 @@ def user_check_type_api(request):
         except Userex.DoesNotExist:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 @api_view(['POST'])
 def user_check_id_api(request):
     if request.method == 'POST':
@@ -56,7 +55,6 @@ def user_create_api(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['POST', 'PATCH', 'DELETE'])
 def user_detail_api(request):
@@ -120,14 +118,14 @@ def pet_image_api(request):
             return Response(serializer.data , status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['POST'])
 def pet_owner_get_api(request):
     try:
         token = request.headers.get('Authorization')
         userId = Userex.objects.get(email=token)
         userSerializer = UserexSerializer(userId)
-        petOwnerAll = Pet.objects.all().filter(owner_id=userSerializer.data['user_id'])
+        petOwnerAll = Pet.objects.all().filter(
+            owner_id=userSerializer.data['user_id'])
     except Userex.DoesNotExist:
         return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
@@ -135,18 +133,11 @@ def pet_owner_get_api(request):
         serializer = PetSerializer(petOwnerAll, many=True)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-
 @api_view(['GET'])
-def pet_images_get_api(request, pk):
-    try:
-        token = request.headers.get('Authorization')
-        userId = Userex.objects.get(email=token)
-        petImageAll = PetImage.objects.all().filter(pet_id=pk)
-    except Userex.DoesNotExist:
-        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
-
+def pet_get_all_api(request):
     if request.method == 'GET':
-        serializer = PetImageSerializer(petImageAll, many=True)
+        petAll = Pet.objects.all()
+        serializer = PetSerializer(petAll, many=True)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 @api_view(['GET', 'POST', 'DELETE'])
@@ -172,3 +163,10 @@ def pet_detail_api(request, pk):
     elif request.method == 'DELETE':
         petId.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def pet_images_get_api(request, pk):
+    if request.method == 'GET':
+        petImageAll = PetImage.objects.all().filter(pet_id=pk)
+        serializer = PetImageSerializer(petImageAll, many=True)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
