@@ -49,6 +49,7 @@ def user_check_id_api(request):
 
 @api_view(['POST'])
 def user_create_api(request):
+    #ตรวจสอบค่าที่ส่งมา เช่น emailช้ำ เบอร์ช้ำ
     if request.method == 'POST':
         serializer = UserexSerializer(data=request.data)
         if serializer.is_valid():
@@ -140,7 +141,8 @@ def pet_get_all_api(request):
         serializer = PetSerializer(petAll, many=True)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-@api_view(['GET', 'POST', 'DELETE'])
+
+@api_view(['GET', 'PATCH', 'POST', 'DELETE'])
 def pet_detail_api(request, pk):
     try:
         token = request.headers.get('Authorization')
