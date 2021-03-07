@@ -153,7 +153,7 @@ def pet_detail_api(request, pk):
 
     if request.method == 'GET':
         serializer = PetSerializer(petId)
-        return Response(serializer)
+        return Response(serializer.data)
 
     elif request.method == 'PATCH':
         serializer = PetSerializer(petId, data=request.data, partial=True)
