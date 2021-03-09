@@ -20,6 +20,11 @@ class UserexSerializer(serializers.ModelSerializer):
         model = Userex
         fields = '__all__'
 
+        def user_image_url(self, Userex):
+            request = self.context.get('request')
+            image_url = Userex.user_image.url
+            return request.build_absolute_uri(image_url)
+
 class PetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pet
@@ -29,3 +34,8 @@ class PetImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PetImage
         fields = '__all__'
+
+        def pet_image_url(self, Userex):
+            request = self.context.get('request')
+            image_url = PetImage.pet_image.url
+            return request.build_absolute_uri(image_url)

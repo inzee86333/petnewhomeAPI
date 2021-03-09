@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from appAPI.models import *
 from appAPI.serializers import *
-import json
 
 # Create your views here.
 
@@ -69,7 +68,7 @@ def user_detail_api(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'POST':
-        newDict = UserexSerializer(userId).data
+        newDict = UserexSerializer(userId, context={"request": request}).data
         newDict.pop('password')
         return Response(newDict)
 
@@ -77,7 +76,7 @@ def user_detail_api(request):
         serializer = UserexSerializer(userId, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data,status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     elif request.method == 'DELETE':
@@ -170,5 +169,5 @@ def pet_detail_api(request, pk):
 def pet_images_get_api(request, pk):
     if request.method == 'GET':
         petImageAll = PetImage.objects.all().filter(pet_id=pk)
-        serializer = PetImageSerializer(petImageAll, many=True)
+        serializer = PetImageSerializer(petImageAll, many=True, context={"request": request})
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
