@@ -31,8 +31,8 @@ class Pet(models.Model):
     birth_year = models.CharField(max_length=255, null=True)
     sex = models.CharField(max_length=255, null=True)
     disease = models.CharField(max_length=255, null=True)
-    province = models.CharField(max_length=255)
-    district = models.CharField(max_length=255)
+    province_code = models.CharField(max_length=255)
+    district_code = models.CharField(max_length=255)
     status = models.CharField(max_length=255, null=True)
 
     def __str__(self):
