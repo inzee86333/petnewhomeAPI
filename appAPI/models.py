@@ -23,7 +23,7 @@ class Userex(models.Model):
 
 class Pet(models.Model):
     pet_id = models.AutoField(primary_key=True)
-    owner_id = models.ForeignKey("appAPI.Userex", verbose_name=("owner"), on_delete=models.CASCADE)
+    owner_id = models.ForeignKey("appAPI.Userex", verbose_name=("owner"), related_name='petdata', on_delete=models.CASCADE)
     new_owner_id = models.ForeignKey("appAPI.Userex", verbose_name=(
         "new_owner"), on_delete=models.CASCADE, related_name='+', null=True)
     animal_type = models.CharField(max_length=255)
@@ -40,8 +40,15 @@ class Pet(models.Model):
 
 class PetImage(models.Model):
     pet_image_id = models.AutoField(primary_key=True)
-    pet_id = models.ForeignKey("appAPI.Pet", verbose_name=("pet"), on_delete=models.CASCADE)
+    pet_id = models.ForeignKey("appAPI.Pet", verbose_name=("pet"), related_name='petImages', on_delete=models.CASCADE)
     pet_image = models.ImageField(upload_to='images/pets/')
 
     def __str__(self):
         return f"PetImageID: {self.pet_image_id} | {self.pet_id}"
+
+class Report(models.Model):
+    report_id = models.AutoField(primary_key=True)
+    reporter = models.ForeignKey("Userex", verbose_name="reporter", on_delete=models.CASCADE, related_name='reporter')
+    report_to = models.ForeignKey("Userex", verbose_name="report_to", on_delete=models.CASCADE, related_name='report_to')
+    pet_id = models.ForeignKey("Pet", verbose_name="pet", on_delete=models.CASCADE,)
+    message = models.CharField(max_length=255)

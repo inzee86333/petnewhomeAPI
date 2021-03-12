@@ -5,3 +5,4 @@ from .models import *
 admin.site.register(Userex)
 admin.site.register(Pet)
 admin.site.register(PetImage)
+admin.site.register(Report)
