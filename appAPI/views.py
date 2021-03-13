@@ -190,7 +190,7 @@ def pet_images_get_api(request, pk):
 
 
 @api_view(['GET'])
-def report_api(request):
+def report_all_api(request):
     if request.method == 'GET':
         reportDetailAll = Userex.objects.filter(user_type='ow')
         serializer = UserReportSerializer(reportDetailAll, many=True)
@@ -198,7 +198,7 @@ def report_api(request):
 
 
 @api_view(['GET'])
-def reportdetail_api(request, id):
+def report_detail_api(request, id):
     # try:
     #     token = request.headers.get('Authorization')
     #     userID = Userex.objects.get(email=token)
@@ -206,14 +206,20 @@ def reportdetail_api(request, id):
     #     return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
     if request.method == 'GET':
-        reportDetailAll = Report.objects.filter(report_id=id)
-        serializer = ReportSerializer(reportDetailAll, many=True)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        reportDetail = Report.objects.get(report_id=id)
+        reportDetailSerializer = ReportSerializer(reportDetail)
+        reporterDetail = Userex.objects.get(user_id=reportDetailSerializer.data['reporter'])
+        reporterDetailSerializer = UserexSerializer(reporterDetail).data
+        reporterDetailSerializer.pop('password')
+        reportToDetail = Userex.objects.get(user_id=reportDetailSerializer.data['report_to'])
+        reportToDetailSerializer = UserexSerializer(reportToDetail).data
+        reportToDetailSerializer.pop('password')
+        reportPetDetail = Pet.objects.get(pet_id=reportDetailSerializer.data['pet_id'])
+        reportPetDetailSerializer = PetReportSerializer(reportPetDetail)
+        newDict = {'reportDetail':reportDetailSerializer.data ,'reporterDetail':reporterDetailSerializer, 'reportToDetail':reportToDetailSerializer, 'reportPetDetail':reportPetDetailSerializer.data}      
+        
+        return Response(newDict, status=status.HTTP_202_ACCEPTED)
+    
 
 
-@api_view(['GET'])
-def reportuserdetail_api(request, idfind):
-    if request.method == 'GET':
-        userdatail = Userex.objects.filter(new_owner_id=idfind)
-        serializer = UserReportSerializer(userdatail, many=True)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
