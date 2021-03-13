@@ -55,6 +55,7 @@ def user_check_id_api(request):
 
 @api_view(['POST'])
 def user_create_api(request):
+    #ตรวจสอบค่าที่ส่งมา เช่น emailช้ำ เบอร์ช้ำ
     if request.method == 'POST':
         serializer = UserexSerializer(data=request.data)
         if serializer.is_valid():
@@ -75,7 +76,7 @@ def user_detail_api(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'POST':
-        newDict = UserexSerializer(userId).data
+        newDict = UserexSerializer(userId, context={"request": request}).data
         newDict.pop('password')
         return Response(newDict)
 
@@ -111,25 +112,6 @@ def pet_create_api(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-# Pets images
-
-
-@api_view(['POST'])
-def pet_image_api(request):
-    if request.method == 'POST':
-        try:
-            token = request.headers.get('Authorization')
-            Userex.objects.get(email=token)
-        except Userex.DoesNotExist:
-            return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
-
-        serializer = PetImageSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
 @api_view(['POST'])
 def pet_owner_get_api(request):
     try:
@@ -154,7 +136,7 @@ def pet_get_all_api(request):
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
-@api_view(['GET', 'POST', 'DELETE'])
+@api_view(['GET', 'PATCH', 'POST', 'DELETE'])
 def pet_detail_api(request, pk):
     try:
         token = request.headers.get('Authorization')
@@ -165,7 +147,7 @@ def pet_detail_api(request, pk):
 
     if request.method == 'GET':
         serializer = PetSerializer(petId)
-        return Response(serializer)
+        return Response(serializer.data)
 
     elif request.method == 'PATCH':
         serializer = PetSerializer(petId, data=request.data, partial=True)
@@ -178,13 +160,40 @@ def pet_detail_api(request, pk):
         petId.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# Pets images
+@api_view(['POST'])
+def pet_image_api(request):
+    if request.method == 'POST':
+        try:
+            token = request.headers.get('Authorization')
+            Userex.objects.get(email=token)
+        except Userex.DoesNotExist:
+            return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
-@api_view(['GET'])
+        serializer = PetImageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data , status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PATCH', 'POST', 'DELETE'])
 def pet_images_get_api(request, pk):
+
+    try:
+        token = request.headers.get('Authorization')
+        Userex.objects.get(email=token)
+    except Userex.DoesNotExist:
+        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
     if request.method == 'GET':
         petImageAll = PetImage.objects.all().filter(pet_id=pk)
-        serializer = PetImageSerializer(petImageAll, many=True)
+        serializer = PetImageSerializer(petImageAll, many=True, context={"request": request})
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    
+    elif request.method == 'DELETE':
+        Image = PetImage.objects.get(pk=pk)
+        Image.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 # Report
 
@@ -223,3 +232,4 @@ def report_detail_api(request, id):
 
 
 
+    
