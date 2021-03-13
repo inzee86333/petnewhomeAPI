@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.db import models
 from rest_framework import serializers
 
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
@@ -15,6 +16,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = ['url', 'name']
 
+
 class UserexSerializer(serializers.ModelSerializer):
     class Meta:
         model = Userex
@@ -25,10 +27,12 @@ class UserexSerializer(serializers.ModelSerializer):
             image_url = Userex.user_image.url
             return request.build_absolute_uri(image_url)
 
+
 class PetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pet
         fields = '__all__'
+
 
 class PetImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,3 +43,15 @@ class PetImageSerializer(serializers.ModelSerializer):
             request = self.context.get('request')
             image_url = PetImage.pet_image.url
             return request.build_absolute_uri(image_url)
+
+
+class ChatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = '__all__'
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = '__all__'

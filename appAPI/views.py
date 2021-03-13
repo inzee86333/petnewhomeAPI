@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from appAPI.models import *
 from appAPI.serializers import *
 
+
 # Create your views here.
 
 # User
@@ -24,6 +25,7 @@ def login_api(request):
         except Userex.DoesNotExist:
             return Response({'message': 'อีเมลไม่ถูกต้อง'}, status=status.HTTP_200_OK)
 
+
 @api_view(['POST'])
 def user_check_type_api(request):
     if request.method == 'POST':
@@ -34,6 +36,7 @@ def user_check_type_api(request):
             return Response({'user_type': serializer.data['user_type']}, status=status.HTTP_202_ACCEPTED)
         except Userex.DoesNotExist:
             return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['POST'])
 def user_check_id_api(request):
@@ -46,15 +49,17 @@ def user_check_id_api(request):
         except Userex.DoesNotExist:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['POST'])
 def user_create_api(request):
-    #ตรวจสอบค่าที่ส่งมา เช่น emailช้ำ เบอร์ช้ำ
+    # ตรวจสอบค่าที่ส่งมา เช่น emailช้ำ เบอร์ช้ำ
     if request.method == 'POST':
         serializer = UserexSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST', 'PATCH', 'DELETE'])
 def user_detail_api(request):
@@ -78,10 +83,11 @@ def user_detail_api(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
     elif request.method == 'DELETE':
         userId.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 # Pets
 @api_view(['POST'])
@@ -102,6 +108,7 @@ def pet_create_api(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['POST'])
 def pet_owner_get_api(request):
     try:
@@ -116,6 +123,7 @@ def pet_owner_get_api(request):
     if request.method == 'POST':
         serializer = PetSerializer(petOwnerAll, many=True)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
 
 @api_view(['GET'])
 def pet_get_all_api(request):
@@ -149,6 +157,7 @@ def pet_detail_api(request, pk):
         petId.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 # Pets images
 @api_view(['POST'])
 def pet_image_api(request):
@@ -162,12 +171,12 @@ def pet_image_api(request):
         serializer = PetImageSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data , status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PATCH', 'POST', 'DELETE'])
 def pet_images_get_api(request, pk):
-
     try:
         token = request.headers.get('Authorization')
         Userex.objects.get(email=token)
@@ -183,3 +192,11 @@ def pet_images_get_api(request, pk):
         Image = PetImage.objects.get(pk=pk)
         Image.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'POST'])
+def x(request, finder, owner):
+    try:
+        token = request.headers.get('Authorization')
+        Userex.objects.get(email=token)
+    except Userex.DoesNotExist:
+        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
