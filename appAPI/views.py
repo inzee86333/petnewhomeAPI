@@ -127,7 +127,7 @@ def pet_owner_get_api(request, sta):
 @api_view(['GET'])
 def pet_get_all_api(request):
     if request.method == 'GET':
-        petAll = Pet.objects.all(status='non adopt')
+        petAll = Pet.objects.all().filter(status='nonAdopt')
         serializer = PetSerializer(petAll, many=True)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
