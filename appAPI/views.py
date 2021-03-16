@@ -7,6 +7,7 @@ from appAPI.serializers import *
 import json
 from rest_framework import viewsets
 
+
 # Create your views here.
 
 # User
@@ -55,7 +56,7 @@ def user_check_id_api(request):
 
 @api_view(['POST'])
 def user_create_api(request):
-    #ตรวจสอบค่าที่ส่งมา เช่น emailช้ำ เบอร์ช้ำ
+    # ตรวจสอบค่าที่ส่งมา เช่น emailช้ำ เบอร์ช้ำ
     if request.method == 'POST':
         serializer = UserexSerializer(data=request.data)
         if serializer.is_valid():
@@ -91,6 +92,7 @@ def user_detail_api(request):
         userId.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 # Pets
 
 
@@ -111,6 +113,7 @@ def pet_create_api(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 def pet_owner_get_api(request):
@@ -160,6 +163,7 @@ def pet_detail_api(request, pk):
         petId.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 # Pets images
 @api_view(['POST'])
 def pet_image_api(request):
@@ -173,12 +177,12 @@ def pet_image_api(request):
         serializer = PetImageSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data , status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PATCH', 'POST', 'DELETE'])
 def pet_images_get_api(request, pk):
-
     try:
         token = request.headers.get('Authorization')
         Userex.objects.get(email=token)
@@ -234,3 +238,10 @@ def report_detail_api(request, id):
 
 
     
+@api_view(['GET', 'POST'])
+def x(request, finder, owner):
+    try:
+        token = request.headers.get('Authorization')
+        Userex.objects.get(email=token)
+    except Userex.DoesNotExist:
+        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
