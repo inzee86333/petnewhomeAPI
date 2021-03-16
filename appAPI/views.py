@@ -1,8 +1,6 @@
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from appAPI.models import *
 from appAPI.serializers import *
 import json
 from rest_framework import viewsets
@@ -137,7 +135,7 @@ def pet_owner_get_api(request, sta):
 @api_view(['GET'])
 def pet_get_all_api(request):
     if request.method == 'GET':
-        petAll = Pet.objects.all(status='non adopt')
+        petAll = Pet.objects.all().filter(status='nonAdopt')
         serializer = PetSerializer(petAll, many=True)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
@@ -253,3 +251,30 @@ def x(request, finder, owner):
         Userex.objects.get(email=token)
     except Userex.DoesNotExist:
         return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+@api_view(['POST'])
+def chat_crest(request):
+    request.data._mutable = True
+    if request.method == 'POST':
+        try:
+            token = request.headers.get('Authorization')
+            userId = Userex.objects.get(email=token)
+        except Userex.DoesNotExist:
+            return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+        petId = Pet.objects.get(pet_id=request.data['pet_id'])
+        serializerPet = PetSerializer(petId)
+        serializerUserex = UserexSerializer(userId)
+
+        try:
+            serializerChat = ChatSerializer(Chat.objects.get(pet_id=request.data['pet_id'], finder_id=serializerUserex.data['user_id']))
+            return Response(serializerChat.data, status=status.HTTP_202_ACCEPTED)
+        except Chat.DoesNotExist:
+            request.data.update({'owner_id': serializerPet.data['owner_id']})
+            request.data.update({'finder_id': serializerUserex.data['user_id']})
+            serializer = ChatSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                serializerChat = ChatSerializer(Chat.objects.get(pet_id=serializerPet.data['pet_id'], finder_id=serializerUserex.data['user_id']))
+                return Response(serializerChat.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
