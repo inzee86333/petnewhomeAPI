@@ -110,13 +110,12 @@ def pet_create_api(request):
 
 
 @api_view(['POST'])
-def pet_owner_get_api(request):
+def pet_owner_get_api(request, sta):
     try:
         token = request.headers.get('Authorization')
         userId = Userex.objects.get(email=token)
         userSerializer = UserexSerializer(userId)
-        petOwnerAll = Pet.objects.all().filter(
-            owner_id=userSerializer.data['user_id'])
+        petOwnerAll = Pet.objects.all().filter(owner_id=userSerializer.data['user_id'], status=sta)
     except Userex.DoesNotExist:
         return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
@@ -128,7 +127,7 @@ def pet_owner_get_api(request):
 @api_view(['GET'])
 def pet_get_all_api(request):
     if request.method == 'GET':
-        petAll = Pet.objects.all()
+        petAll = Pet.objects.all(status='non adopt')
         serializer = PetSerializer(petAll, many=True)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
