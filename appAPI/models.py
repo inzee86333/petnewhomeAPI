@@ -29,6 +29,10 @@ class Userex(models.Model):
 
 
 class Pet(models.Model):
+    PET_STATUS = (
+        ('nonAdopt', 'nonAdopt'),
+        ('adopted', 'adopted'),
+    )
     pet_id = models.AutoField(primary_key=True)
     owner_id = models.ForeignKey("appAPI.Userex", verbose_name=("owner"), related_name='petdata', on_delete=models.CASCADE)
     new_owner_id = models.ForeignKey("appAPI.Userex", verbose_name=(
@@ -40,7 +44,7 @@ class Pet(models.Model):
     disease = models.CharField(max_length=255, null=True)
     province_code = models.CharField(max_length=255)
     amphoe_code = models.CharField(max_length=255)
-    status = models.CharField(max_length=255, null=True)
+    status = models.CharField(max_length=255, choices=PET_STATUS, default='nonAdopt')
 
     def __str__(self):
         return f"PetID: {self.pet_id} | {self.owner_id}"
