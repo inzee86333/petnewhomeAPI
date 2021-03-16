@@ -23,7 +23,11 @@ def login_api(request):
             serializer = UserexSerializer(userId)
             if email == serializer.data['email']:
                 if password == serializer.data['password']:
-                    return Response({'message': 'เข้าสู่ระบบสำเร็จ', 'email': email}, status=status.HTTP_202_ACCEPTED)
+                    if serializer.data['status'] == 'on':
+                        return Response({'message': 'เข้าสู่ระบบสำเร็จ', 'email': email}, status=status.HTTP_202_ACCEPTED)
+                    else:
+                        return Response({'message': 'บัญชีถูกระงับ','email': ''}, status=status.HTTP_200_OK)
+
                 else:
                     return Response({'message': 'รหัสผ่านไม่ถูก'}, status=status.HTTP_200_OK)
         except Userex.DoesNotExist:
@@ -236,11 +240,10 @@ def report_detail_api(request, id):
 def report_user_update_api(request, id):
     if request.method == 'PATCH':
         userDetail = Userex.objects.get(user_id=id)
-        userDetailSerializer = UserexSerializer(userDetail, data=request.data, partial=True)
-        if userDetailSerializer.is_valid():
-            userDetailSerializer.save()
-            return Response(userDetailSerializer.data, status=status.HTTP_200_OK)
-        return Response(userDetailSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        userDetail.status = 'off'
+        userDetail.save(update_fields=['status'])        
+        return Response(status=status.HTTP_200_OK)
+        
 
     
 @api_view(['GET', 'POST'])

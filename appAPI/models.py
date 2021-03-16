@@ -6,6 +6,7 @@ class Userex(models.Model):
     USER_TYPE = (
         ('ow', 'owner'),
         ('fi', 'finder'),
+        ('ad', 'admin')
     )
     USER_STATUS = (
         ('on', 'activate'),

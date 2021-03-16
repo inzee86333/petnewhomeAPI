@@ -19,6 +19,7 @@ urlpatterns = [
     #report
     path('report/', views.report_all_api),
     path('report/detail/<int:id>', views.report_detail_api),
+    path('report/detail/userdetail/<int:id>', views.report_user_update_api)
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
