@@ -35,7 +35,7 @@ class PetImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PetImage
         fields = '__all__'
-        
+
         def pet_image_url(self, Userex):
             request = self.context.get('request')
             image_url = PetImage.pet_image.url
@@ -52,16 +52,6 @@ class UserReportSerializer(serializers.ModelSerializer):
         model = Userex
         fields = 'user_id', 'first_name', 'last_name', 'user_image', 'reporter'
 
-class PetImagesReportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PetImage
-        fields = 'pet_id', 'pet_image'
-
-class PetReportSerializer(serializers.ModelSerializer):
-    petImages = PetImagesReportSerializer(many=True, read_only=True)
-    class Meta:
-        model = Pet
-        fields = 'animal_type', 'species', 'birth_year', 'sex', 'disease', 'petImages'
 
 
         

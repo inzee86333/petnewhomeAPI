@@ -218,15 +218,16 @@ def report_detail_api(request, id):
         reportDetail = Report.objects.get(report_id=id)
         reportDetailSerializer = ReportSerializer(reportDetail)
         reporterDetail = Userex.objects.get(user_id=reportDetailSerializer.data['reporter'])
-        reporterDetailSerializer = UserexSerializer(reporterDetail).data
+        reporterDetailSerializer = UserexSerializer(reporterDetail, context={"request": request}).data
         reporterDetailSerializer.pop('password')
         reportToDetail = Userex.objects.get(user_id=reportDetailSerializer.data['report_to'])
-        reportToDetailSerializer = UserexSerializer(reportToDetail).data
+        reportToDetailSerializer = UserexSerializer(reportToDetail, context={"request": request}).data
         reportToDetailSerializer.pop('password')
         reportPetDetail = Pet.objects.get(pet_id=reportDetailSerializer.data['pet_id'])
-        reportPetDetailSerializer = PetReportSerializer(reportPetDetail)
-        newDict = {'reportDetail':reportDetailSerializer.data ,'reporterDetail':reporterDetailSerializer, 'reportToDetail':reportToDetailSerializer, 'reportPetDetail':reportPetDetailSerializer.data}      
-        
+        reportPetDetailSerializer = PetSerializer(reportPetDetail)
+        reportPetImagesDetail = PetImage.objects.get(pet_id=reportDetailSerializer.data['pet_id'])
+        reportPetImagesSerializer = PetImageSerializer(reportPetImagesDetail, context={"request": request})
+        newDict = {'reportDetail':reportDetailSerializer.data ,'reporterDetail':reporterDetailSerializer, 'reportToDetail':reportToDetailSerializer, 'reportPetDetail':reportPetDetailSerializer.data, 'reportPetImagesDetail':reportPetImagesSerializer.data}      
         return Response(newDict, status=status.HTTP_202_ACCEPTED)
     
 
