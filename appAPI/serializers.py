@@ -47,7 +47,7 @@ class PetImageSerializer(serializers.ModelSerializer):
 
 class ChatSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Message
+        model = Chat
         fields = '__all__'
 
 

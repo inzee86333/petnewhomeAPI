@@ -16,6 +16,8 @@ urlpatterns = [
     path('pet_detail/<int:pk>', views.pet_detail_api),
     path('pet_image/', views.pet_image_api),
     path('pet_image/<int:pk>', views.pet_images_get_api),
+    #chat
+    path('crest_chat/', views.chat_crest),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
