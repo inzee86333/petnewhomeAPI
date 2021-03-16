@@ -200,8 +200,6 @@ def pet_images_get_api(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # Report
-
-
 @api_view(['GET'])
 def report_all_api(request):
     if request.method == 'GET':
@@ -233,9 +231,17 @@ def report_detail_api(request, id):
         reportPetImagesSerializer = PetImageSerializer(reportPetImagesDetail, context={"request": request})
         newDict = {'reportDetail':reportDetailSerializer.data ,'reporterDetail':reporterDetailSerializer, 'reportToDetail':reportToDetailSerializer, 'reportPetDetail':reportPetDetailSerializer.data, 'reportPetImagesDetail':reportPetImagesSerializer.data}      
         return Response(newDict, status=status.HTTP_202_ACCEPTED)
-    
 
 
+@api_view(['PATCH'])
+def report_user_update_api(request, id):
+    if request.method == 'PATCH':
+        userDetail = Userex.objects.get(user_id=id)
+        userDetailSerializer = UserexSerializer(userDetail, data=request.data, partial=True)
+        if userDetailSerializer.is_valid():
+            userDetailSerializer.save()
+            return Response(userDetailSerializer.data, status=status.HTTP_200_OK)
+        return Response(userDetailSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
 @api_view(['GET', 'POST'])
