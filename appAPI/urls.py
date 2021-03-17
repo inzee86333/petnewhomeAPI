@@ -9,6 +9,7 @@ urlpatterns = [
     path('check_user_id/', views.user_check_id_api),
     path('user_create/', views.user_create_api),
     path('user_detail/', views.user_detail_api),
+    path('user_detail/<int:pk>', views.user_get_detail_api),
     #pets
     path('pet_create/', views.pet_create_api),
     path('pet_get_all/', views.pet_get_all_api),
@@ -21,7 +22,8 @@ urlpatterns = [
     path('report/detail/<int:id>', views.report_detail_api),
     path('report/detail/userdetail/<int:id>', views.report_user_update_api),
     #chat
-    path('crest_chat/', views.chat_crest),
+    path('chat_create/', views.chat_create_api),
+    path('chat_detail/<int:pk>', views.chat_detail_api),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

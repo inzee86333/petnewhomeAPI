@@ -68,17 +68,27 @@ def user_create_api(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def user_get_detail_api(request, pk):
+    try:
+        token = request.headers.get('Authorization')
+        userAuth = Userex.objects.get(email=token)
+    except Userex.DoesNotExist:
+        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+    if request.method == 'GET':
+        userId = Userex.objects.get(pk=pk)
+        newDict = UserexSerializer(userId, context={"request": request}).data
+        newDict.pop('password')
+        return Response(newDict)
 
 @api_view(['POST', 'PATCH', 'DELETE'])
 def user_detail_api(request):
-    """
-    Retrieve, update or delete a user.
-    """
     try:
         token = request.headers.get('Authorization')
         userId = Userex.objects.get(email=token)
     except Userex.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
     if request.method == 'POST':
         newDict = UserexSerializer(userId, context={"request": request}).data
@@ -245,17 +255,8 @@ def report_user_update_api(request, id):
         return Response(status=status.HTTP_200_OK)
         
 
-    
-@api_view(['GET', 'POST'])
-def x(request, finder, owner):
-    try:
-        token = request.headers.get('Authorization')
-        Userex.objects.get(email=token)
-    except Userex.DoesNotExist:
-        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
-
 @api_view(['POST'])
-def chat_crest(request):
+def chat_create_api(request):
     request.data._mutable = True
     if request.method == 'POST':
         try:
@@ -280,3 +281,16 @@ def chat_crest(request):
                 serializerChat = ChatSerializer(Chat.objects.get(pet_id=serializerPet.data['pet_id'], finder_id=serializerUserex.data['user_id']))
                 return Response(serializerChat.data, status=status.HTTP_201_CREATED)
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def chat_detail_api(request, pk):
+    try:
+        token = request.headers.get('Authorization')
+        Userex.objects.get(email=token)
+        chatId = Chat.objects.get(pk=pk)
+    except Userex.DoesNotExist:
+        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+    if request.method == 'GET':
+        serializer = ChatSerializer(chatId)
+        return Response(serializer.data)
