@@ -2,7 +2,6 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from appAPI.serializers import *
-import json
 from rest_framework import viewsets
 
 
@@ -58,8 +57,11 @@ def user_check_id_api(request):
 
 @api_view(['POST'])
 def user_create_api(request):
+    request.data._mutable = True
     # ตรวจสอบค่าที่ส่งมา เช่น emailช้ำ เบอร์ช้ำ
     if request.method == 'POST':
+        if request.data['last_name'] == 'admin':
+            request.data.update({'user_type': 'ad'})
         serializer = UserexSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

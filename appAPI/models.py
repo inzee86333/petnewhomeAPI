@@ -23,7 +23,7 @@ class Userex(models.Model):
     user_image = models.ImageField(upload_to='images/user/', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=10, choices=USER_STATUS, null=True)
+    status = models.CharField(max_length=10, choices=USER_STATUS, null=True, default='on')
 
     def __str__(self):
         return f"UserexID: {self.user_id} | {self.email}"
