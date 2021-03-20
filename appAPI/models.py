@@ -35,7 +35,8 @@ class Pet(models.Model):
         ('adopted', 'adopted'),
     )
     pet_id = models.AutoField(primary_key=True)
-    owner_id = models.ForeignKey("appAPI.Userex", verbose_name=("owner"), related_name='petdata', on_delete=models.CASCADE)
+    owner_id = models.ForeignKey("appAPI.Userex", verbose_name=("owner"), related_name='petdata',
+                                 on_delete=models.CASCADE)
     new_owner_id = models.ForeignKey("appAPI.Userex", verbose_name=(
         "new_owner"), on_delete=models.CASCADE, related_name='+', null=True)
     animal_type = models.CharField(max_length=255)
@@ -59,12 +60,15 @@ class PetImage(models.Model):
     def __str__(self):
         return f"PetImageID: {self.pet_image_id} | {self.pet_id}"
 
+
 class Report(models.Model):
     report_id = models.AutoField(primary_key=True)
     reporter = models.ForeignKey("Userex", verbose_name="reporter", on_delete=models.CASCADE, related_name='reporter')
-    report_to = models.ForeignKey("Userex", verbose_name="report_to", on_delete=models.CASCADE, related_name='report_to')
-    pet_id = models.ForeignKey("Pet", verbose_name="pet", on_delete=models.CASCADE,)
+    report_to = models.ForeignKey("Userex", verbose_name="report_to", on_delete=models.CASCADE,
+                                  related_name='report_to')
+    pet_id = models.ForeignKey("Pet", verbose_name="pet", on_delete=models.CASCADE, )
     message = models.CharField(max_length=255)
+
 
 class Chat(models.Model):
     chat_id = models.AutoField(primary_key=True)
@@ -76,7 +80,8 @@ class Chat(models.Model):
 class Message(models.Model):
     message_id = models.AutoField(primary_key=True)
     chat_id = models.ForeignKey("appAPI.Chat", verbose_name="chat", on_delete=models.CASCADE)
-    sender = models.ForeignKey("appAPI.Userex", verbose_name="sender", on_delete=models.CASCADE)
-    receiver = models.ForeignKey("appAPI.Userex", verbose_name="receiver", on_delete=models.CASCADE, related_name='+')
+    sender_id = models.ForeignKey("appAPI.Userex", verbose_name="sender", on_delete=models.CASCADE)
+    receiver_id = models.ForeignKey("appAPI.Userex", verbose_name="receiver", on_delete=models.CASCADE, related_name='+',
+                                 null=True)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
