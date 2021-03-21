@@ -310,15 +310,28 @@ def chat_get_api(request):
     try:
         token = request.headers.get('Authorization')
         userId = Userex.objects.get(email=token)
-
     except Userex.DoesNotExist:
         return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
     serializerUserex = UserexSerializer(userId)
     chatId = Chat.objects.filter(finder_id=serializerUserex.data['user_id']) | Chat.objects.filter(owner_id=serializerUserex.data['user_id'])
     if request.method == 'POST':
         serializer = ChatSerializer(chatId, many=True)
         return Response(serializer.data)
 
+
+@api_view(['GET'])
+def chat_get_pet_api(request, pk):
+    try:
+        token = request.headers.get('Authorization')
+        userId = Userex.objects.get(email=token)
+    except Userex.DoesNotExist:
+        return Response({'message': 'กรุณาเข้าสู่ระบบ'}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+    chatId = Chat.objects.filter(pet_id=pk)
+    if request.method == 'GET':
+        serializer = ChatSerializer(chatId, many=True)
+        return Response(serializer.data)
 
 @api_view(['POST'])
 def message_create_api(request):

@@ -25,6 +25,7 @@ urlpatterns = [
     path('chat_create/', views.chat_create_api),
     path('chat_detail/<int:pk>', views.chat_detail_api),
     path('chat_get/', views.chat_get_api),
+    path('chat_get_pet/<int:pk>', views.chat_get_pet_api),
     # message
     path('message_create/', views.message_create_api),
     path('message_get/<int:pk>', views.message_get_by_chat_api),
