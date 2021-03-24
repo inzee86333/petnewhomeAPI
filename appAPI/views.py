@@ -204,8 +204,8 @@ def pet_images_get_api(request, pk):
 @api_view(['GET'])
 def report_all_api(request):
     if request.method == 'GET':
-        reportDetailAll = Userex.objects.filter(user_type='ow')
-        serializer = UserReportSerializer(reportDetailAll, many=True)
+        reportDetailAll = Report.objects.all()
+        serializer = SendReportSerializer(reportDetailAll, many=True)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
@@ -278,3 +278,35 @@ def chat_crest(request):
                 serializerChat = ChatSerializer(Chat.objects.get(pet_id=serializerPet.data['pet_id'], finder_id=serializerUserex.data['user_id']))
                 return Response(serializerChat.data, status=status.HTTP_201_CREATED)
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def user_owner_pet_detail(request, id):
+    if request.method == 'GET':
+        petDetail = Pet.objects.get(pet_id=id)
+        petDetailSerializer = PetSerializer(petDetail)
+        petImages = PetImage.objects.get(pet_id=id)
+        petImagesSerializer = PetImageSerializer(petImages, context={"request": request})
+        userDetail = Userex.objects.get(user_id=petDetailSerializer.data['new_owner_id'])
+        userDetailSerializer = UserexSerializer(userDetail, context={"request": request}).data
+        userDetailSerializer.pop('password')
+        newDict = {'PetDetail': petDetailSerializer.data, 'PetImages': petImagesSerializer.data, 'Userdetail': userDetailSerializer}
+        return Response(newDict, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['POST'])
+def user_owner_send_report(request):
+    if request.method == 'POST':
+        reportserializer = SendReportSerializer(data=request.data)
+        if reportserializer.is_valid():
+            reportserializer.save()
+            return Response(reportserializer.data, status=status.HTTP_201_CREATED)
+        return Response(reportserializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def user_get_detail(request, id):
+    if request.method == 'GET':
+        userDetail = Userex.objects.get(user_id=id)
+        userSerializer = UserexSerializer(userDetail, context={"request": request}).data
+        userSerializer.pop('password')
+        return Response(userSerializer, status=status.HTTP_202_ACCEPTED)

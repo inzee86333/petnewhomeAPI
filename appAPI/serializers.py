@@ -56,6 +56,11 @@ class UserReportSerializer(serializers.ModelSerializer):
         model = Userex
         fields = 'user_id', 'first_name', 'last_name', 'user_image', 'reporter'
 
+class SendReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = '__all__'
+
 
 
         
