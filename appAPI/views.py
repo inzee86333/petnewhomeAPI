@@ -321,6 +321,8 @@ def user_get_detail(request, id):
         userSerializer = UserexSerializer(userDetail, context={"request": request}).data
         userSerializer.pop('password')
         return Response(userSerializer, status=status.HTTP_202_ACCEPTED)
+
+@api_view(['GET'])
 def chat_detail_api(request, pk):
     try:
         token = request.headers.get('Authorization')
