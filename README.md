@@ -1,5 +1,5 @@
 # petnewhomeAPI
 Instructions
-python manage.py makemigrations appAPI
-python manage.py migrate
-python manage.py runserve
+/n python manage.py makemigrations appAPI
+/n python manage.py migrate
+/n python manage.py runserve
