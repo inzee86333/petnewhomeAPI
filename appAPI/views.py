@@ -39,7 +39,7 @@ def user_check_type_api(request):
         try:
             userId = Userex.objects.get(email=token)
             serializer = UserexSerializer(userId)
-            return Response({'user_type': serializer.data['user_type']}, status=status.HTTP_202_ACCEPTED)
+            return Response(serializer.data['user_type'], status=status.HTTP_202_ACCEPTED)
         except Userex.DoesNotExist:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
