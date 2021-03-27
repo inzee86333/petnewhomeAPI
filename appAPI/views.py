@@ -27,9 +27,9 @@ def login_api(request):
                         return Response({'message': 'บัญชีถูกระงับ', 'email': ''}, status=status.HTTP_200_OK)
 
                 else:
-                    return Response({'message': 'รหัสผ่านไม่ถูก'}, status=status.HTTP_200_OK)
+                    return Response({'message': 'อีเมลหรือรหัสผ่านไม่ถูกต้อง'}, status=status.HTTP_200_OK)
         except Userex.DoesNotExist:
-            return Response({'message': 'อีเมลไม่ถูกต้อง'}, status=status.HTTP_200_OK)
+            return Response({'message': 'อีเมลหรือรหัสผ่านไม่ถูกต้อง'}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -66,8 +66,8 @@ def user_create_api(request):
         serializer = UserexSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)        
+        return Response(serializer.errors, status=status.HTTP_202_ACCEPTED)
 
 
 @api_view(['GET'])
@@ -244,8 +244,8 @@ def report_detail_api(request, id):
         reportToDetailSerializer.pop('password')
         reportPetDetail = Pet.objects.get(pet_id=reportDetailSerializer.data['pet_id'])
         reportPetDetailSerializer = PetSerializer(reportPetDetail)
-        reportPetImagesDetail = PetImage.objects.get(pet_id=reportDetailSerializer.data['pet_id'])
-        reportPetImagesSerializer = PetImageSerializer(reportPetImagesDetail, context={"request": request})
+        reportPetImagesDetail = PetImage.objects.filter(pet_id=reportDetailSerializer.data['pet_id'])
+        reportPetImagesSerializer = PetImageSerializer(reportPetImagesDetail, context={"request": request}, many=True)
         newDict = {'reportDetail': reportDetailSerializer.data, 'reporterDetail': reporterDetailSerializer,
                    'reportToDetail': reportToDetailSerializer, 'reportPetDetail': reportPetDetailSerializer.data,
                    'reportPetImagesDetail': reportPetImagesSerializer.data}
@@ -253,11 +253,14 @@ def report_detail_api(request, id):
 
 
 @api_view(['PATCH'])
-def report_user_update_api(request, id):
+def report_user_update_api(request, id, report_id):
     if request.method == 'PATCH':
         userDetail = Userex.objects.get(user_id=id)
         userDetail.status = 'off'
+        reportDetail = Report.objects.get(report_id = report_id)
+        reportDetail.report_status = 'Done'
         userDetail.save(update_fields=['status'])
+        reportDetail.save(update_fields=['report_status'])
         return Response(status=status.HTTP_200_OK)
 
 
@@ -296,8 +299,8 @@ def user_owner_pet_detail(request, id):
     if request.method == 'GET':
         petDetail = Pet.objects.get(pet_id=id)
         petDetailSerializer = PetSerializer(petDetail)
-        petImages = PetImage.objects.get(pet_id=id)
-        petImagesSerializer = PetImageSerializer(petImages, context={"request": request})
+        petImages = PetImage.objects.filter(pet_id=id)
+        petImagesSerializer = PetImageSerializer(petImages, context={"request": request}, many=True)
         userDetail = Userex.objects.get(user_id=petDetailSerializer.data['new_owner_id'])
         userDetailSerializer = UserexSerializer(userDetail, context={"request": request}).data
         userDetailSerializer.pop('password')
@@ -311,6 +314,7 @@ def user_owner_send_report(request):
         reportserializer = SendReportSerializer(data=request.data)
         if reportserializer.is_valid():
             reportserializer.save()
+            print(reportserializer.data)
             return Response(reportserializer.data, status=status.HTTP_201_CREATED)
         return Response(reportserializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

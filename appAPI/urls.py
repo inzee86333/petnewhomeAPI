@@ -20,7 +20,7 @@ urlpatterns = [
     # report
     path('report/', views.report_all_api),
     path('report/detail/<int:id>', views.report_detail_api),
-    path('report/detail/userdetail/<int:id>', views.report_user_update_api),
+    path('report/detail/userdetail/<int:id>/<int:report_id>', views.report_user_update_api),
     path('pet_owner_detail/<int:id>', views.user_owner_pet_detail),
     path('send_report/', views.user_owner_send_report),
     path('user_get_detail/<int:id>', views.user_get_detail),    

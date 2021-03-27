@@ -62,12 +62,19 @@ class PetImage(models.Model):
 
 
 class Report(models.Model):
+    Status = (
+        ("Done", "Done"),
+        ("Pending", "Pending"),
+    )
+    created_at = models.DateTimeField(auto_now_add=True, editable=True)
+    updated_at = models.DateTimeField(auto_now=True, editable=True)
     report_id = models.AutoField(primary_key=True)
     reporter = models.ForeignKey("Userex", verbose_name="reporter", on_delete=models.CASCADE, related_name='reporter')
     report_to = models.ForeignKey("Userex", verbose_name="report_to", on_delete=models.CASCADE,
                                   related_name='report_to')
     pet_id = models.ForeignKey("Pet", verbose_name="pet", on_delete=models.CASCADE, )
     message = models.CharField(max_length=255)
+    report_status = models.CharField(max_length=100)
 
 
 class Chat(models.Model):
